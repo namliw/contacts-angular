@@ -12,7 +12,18 @@ angular.module('ContactsApp',['ngRoute','ngResource','ngMessages'])
 		.when('/contact/:id',{
 			controller:'SingleController',
 			templateUrl:'views/single.html'
-		});
+		})
+		.when('/settings',{
+			controller:'SettingsController',
+			templateUrl:'views/settings.html'
+		})
+		.otherwise({redirectTo:'/contacts'});
 
 		$locationProvider.html5Mode(true); //dinamyc location change
+	})
+	.value('options',{})
+	.run(function(options,Fields){
+		Fields.get().success(function(data){
+			options.displayed_field = data;
+		});
 	});

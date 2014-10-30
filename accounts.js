@@ -19,7 +19,7 @@ router
 		res.sendfile('public/login.html');
 	})
 	.post('/login',function(req,res){
-		console.log('login');
+		//console.log('login');
 		var user = {
 			username: req.body.username,
 			password: hash(req.body.password)
@@ -34,7 +34,7 @@ router
 		});
 	})
 	.post('/register',function(req,res){
-		console.log('register');
+		//console.log('register');
 		var user = {
 			username: req.body.username,
 			password: hash(req.body.password),
@@ -59,14 +59,26 @@ router
 		res.redirect('/');
 	})
 	.use(function(req,res,next){
-		console.log('checking for user registered',req.session.userId)
+		//console.log('checking for user registered',req.session.userId)
 		if(req.session.userId){
 			db.findOne({id:req.session.userId},function(err,data){
 				req.user = data;
-				console.log('user found',req.user,data)
+				//console.log('user found',req.user,data)
 			});
 		}
 		next();
+	})
+	.get('/options/displayed_fields',function(req,res){
+			if(!req.user){
+				res.json([]);
+			}
+			res.json(req.user.options.displayed_fields || []);
+	})
+	.post('/options/displayed_fields',function(req,res){
+			req.user.options.displayed_fields = req.body.fields;
+			db.update({id: req.user.id},req.user,function(err,data){
+				res.json(data[0].options.displayed_fields);
+			});
 	});
 
 module.exports = router;

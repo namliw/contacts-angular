@@ -9,6 +9,7 @@ router
 	.use(bodyParser.json())
 	.route('/contact')
 		.get(function(req,res){
+			console.log(req.user.id,'api call');
 			db.find({userId:parseInt(req.user.id,10)},
 				function(err,data){
 					res.json(data);
